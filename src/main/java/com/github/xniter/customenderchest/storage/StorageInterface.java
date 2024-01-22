@@ -6,17 +6,25 @@ import org.bukkit.inventory.Inventory;
 import java.util.UUID;
 
 public interface StorageInterface {
-	
-	//Storage Flat File data methods
-    public boolean hasDataFile(UUID playerUUID);
-    public boolean deleteDataFile(UUID playerUUID);
-	public boolean saveEnderChest(Player p, Inventory inv);
-	public boolean saveEnderChest(UUID p, Inventory inv);
-	public boolean loadEnderChest(Player p, Inventory inv);
-	public boolean loadEnderChest(UUID playerUUID, Inventory inv);
-	public String loadName(UUID playerUUID);
-	public Integer loadSize(UUID playerUUID);
-	//For import command only
-	public void saveEnderChest(UUID uuid, Inventory endInv, String playerName, int invSize);
+
+    //Storage Flat File data methods
+    boolean hasDataFile(UUID playerUUID);
+
+    boolean deleteDataFile(UUID playerUUID);
+
+    boolean saveEnderChest(Player p, Inventory inv);
+
+    boolean saveEnderChest(UUID p, Inventory inv);
+
+    boolean loadEnderChest(Player p, Inventory inv);
+
+    boolean loadEnderChest(UUID playerUUID, Inventory inv);
+
+    String loadName(UUID playerUUID);
+
+    Integer loadSize(UUID playerUUID);
+
+    //For import command only
+    void saveEnderChest(UUID uuid, Inventory endInv, String playerName, int invSize);
 
 }

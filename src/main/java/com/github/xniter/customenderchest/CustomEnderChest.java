@@ -23,11 +23,9 @@ import java.util.logging.Logger;
 public final class CustomEnderChest extends JavaPlugin {
 
     public static Logger log;
-    public Map<Inventory, UUID> admin = new HashMap<Inventory, UUID>();
     public static boolean is19Server = true;
     public static boolean is13Server = false;
     public static String pluginName = "CustomEnderChest";
-
     private static ConfigHandler configHandler;
     private static StorageInterface storageInterface;
     private static EnderChestUtils enderchestUtils;
@@ -36,6 +34,7 @@ public final class CustomEnderChest extends JavaPlugin {
     private static SoundHandler sH;
     private static ModdedSerializer ms;
     private static FileToMysqlCmd ftmc;
+    public Map<Inventory, UUID> admin = new HashMap<Inventory, UUID>();
 
     public void onEnable() {
         log = getLogger();
@@ -172,24 +171,31 @@ public final class CustomEnderChest extends JavaPlugin {
     public ConfigHandler getConfigHandler() {
         return configHandler;
     }
+
     public StorageInterface getStorageInterface() {
         return storageInterface;
     }
+
     public EnderChestUtils getEnderChestUtils() {
         return enderchestUtils;
     }
+
     public MysqlSetup getMysqlSetup() {
         return mysqlSetup;
     }
+
     public SoundHandler getSoundHandler() {
         return sH;
     }
+
     public DataHandler getDataHandler() {
         return dH;
     }
+
     public ModdedSerializer getModdedSerializer() {
         return ms;
     }
+
     public FileToMysqlCmd getFileToMysqlCmd() {
         return ftmc;
     }

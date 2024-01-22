@@ -1,7 +1,6 @@
 package com.github.xniter.customenderchest.commands;
 
 import com.github.xniter.customenderchest.CustomEnderChest;
-import net.craftersland.customenderchest.EnderChest;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.FileConfiguration;

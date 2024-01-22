@@ -1,7 +1,6 @@
 package com.github.xniter.customenderchest.storage;
 
 import com.github.xniter.customenderchest.CustomEnderChest;
-import net.craftersland.customenderchest.EnderChest;
 import org.bukkit.Bukkit;
 
 import java.sql.*;

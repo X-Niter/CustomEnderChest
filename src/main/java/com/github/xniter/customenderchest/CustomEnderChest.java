@@ -23,9 +23,11 @@ import java.util.logging.Logger;
 public final class CustomEnderChest extends JavaPlugin {
 
     public static Logger log;
+    public Map<Inventory, UUID> admin = new HashMap<Inventory, UUID>();
     public static boolean is19Server = true;
     public static boolean is13Server = false;
     public static String pluginName = "CustomEnderChest";
+
     private static ConfigHandler configHandler;
     private static StorageInterface storageInterface;
     private static EnderChestUtils enderchestUtils;
@@ -34,7 +36,6 @@ public final class CustomEnderChest extends JavaPlugin {
     private static SoundHandler sH;
     private static ModdedSerializer ms;
     private static FileToMysqlCmd ftmc;
-    public Map<Inventory, UUID> admin = new HashMap<Inventory, UUID>();
 
     public void onEnable() {
         log = getLogger();
@@ -42,14 +43,14 @@ public final class CustomEnderChest extends JavaPlugin {
         configHandler = new ConfigHandler(this);
         checkForModdedNBTsupport();
         enderchestUtils = new EnderChestUtils(this);
-        if (configHandler.getString("database.typeOfDatabase").equalsIgnoreCase("mysql")) {
+        if (configHandler.getString("database.typeOfDatabase").equalsIgnoreCase("mysql") == true) {
             log.info("Using MySQL database for data.");
             mysqlSetup = new MysqlSetup(this);
             storageInterface = new MysqlStorage(this);
         } else {
             log.info("Using FlatFile system for data. IMPORTANT! We recommend MySQL.");
-            File pluginFolder = new File("plugins" + FileSystems.getDefault().getSeparator() + pluginName + FileSystems.getDefault().getSeparator() + "PlayerData");
-            if (!pluginFolder.exists()) {
+            File pluginFolder = new File("plugins" + System.getProperty("file.separator") + pluginName + System.getProperty("file.separator") + "PlayerData");
+            if (pluginFolder.exists() == false) {
                 pluginFolder.mkdir();
             }
             storageInterface = new FlatFileStorage(this);
@@ -129,21 +130,6 @@ public final class CustomEnderChest extends JavaPlugin {
             is13Server = true;
             log.info("Compatible server version detected: " + version);
             return true;
-        } else if (version.matches("1.18") || version.matches("1.18.1") || version.matches("1.18.2")) {
-            is19Server = true;
-            is13Server = true;
-            log.info("Compatible server version detected: " + version);
-            return true;
-        } else if (version.matches("1.19") || version.matches("1.19.1") || version.matches("1.19.2") || version.matches("1.19.3") || version.matches("1.19.4")) {
-            is19Server = true;
-            is13Server = true;
-            log.info("Compatible server version detected: " + version);
-            return true;
-        } else if (version.matches("1.20") || version.matches("1.20.1") || version.matches("1.20.2") || version.matches("1.20.3") || version.matches("1.20.4")) {
-            is19Server = true;
-            is13Server = true;
-            log.info("Compatible server version detected: " + version);
-            return true;
         } else {
             //Default fallback to 1.15 API
             is19Server = true;
@@ -154,7 +140,7 @@ public final class CustomEnderChest extends JavaPlugin {
     }
 
     private void checkForModdedNBTsupport() {
-        if (configHandler.getBoolean("settings.modded-NBT-data-support")) {
+        if (configHandler.getBoolean("settings.modded-NBT-data-support") == true) {
             if (configHandler.getString("database.typeOfDatabase").equalsIgnoreCase("mysql")) {
                 if (Bukkit.getPluginManager().getPlugin("ProtocolLib") != null) {
                     ms = new ModdedSerializer(this);
@@ -171,32 +157,26 @@ public final class CustomEnderChest extends JavaPlugin {
     public ConfigHandler getConfigHandler() {
         return configHandler;
     }
-
     public StorageInterface getStorageInterface() {
         return storageInterface;
     }
-
     public EnderChestUtils getEnderChestUtils() {
         return enderchestUtils;
     }
-
     public MysqlSetup getMysqlSetup() {
         return mysqlSetup;
     }
-
     public SoundHandler getSoundHandler() {
         return sH;
     }
-
     public DataHandler getDataHandler() {
         return dH;
     }
-
     public ModdedSerializer getModdedSerializer() {
         return ms;
     }
-
     public FileToMysqlCmd getFileToMysqlCmd() {
         return ftmc;
     }
+
 }

@@ -7,7 +7,6 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.UUID;
 
@@ -20,7 +19,7 @@ public class CommandHandler implements CommandExecutor {
     }
 
     @Override
-    public boolean onCommand(final @NotNull CommandSender sender, final @NotNull Command command, final String cmdlabel, final String[] args) {
+    public boolean onCommand(final CommandSender sender, final Command command, final String cmdlabel, final String[] args) {
         Player p = null;
 
         if (cmdlabel.equalsIgnoreCase("bp") || cmdlabel.equalsIgnoreCase("backpack")) {
@@ -60,11 +59,10 @@ public class CommandHandler implements CommandExecutor {
 									enderchest.getConfigHandler().printMessage(p, "chatMessages.openCmdUsage");
 									return false;
 								}*/
-                        return false;
                     } else {
                         sender.sendMessage(ChatColor.DARK_RED + ">> " + ChatColor.RED + "You can't run this command by console!");
-                        return false;
                     }
+                    return false;
                 } else if (args[0].equalsIgnoreCase("importfromflatfile")) {
                     if (sender instanceof Player) {
                         p = (Player) sender;
@@ -178,7 +176,7 @@ public class CommandHandler implements CommandExecutor {
                         }
                         enderchest.getFileToMysqlCmd().runCmd(sender, true);
                     } else {
-                        sender.sendMessage("Usage: /customec importfromflatfile overwrite");
+                        sender.sendMessage("Usage: /bp importfromflatfile overwrite");
                     }
                 } else if (args[0].equalsIgnoreCase("delete")) {
                     if (sender instanceof Player) {
@@ -266,23 +264,23 @@ public class CommandHandler implements CommandExecutor {
     public void sendHelp(Player p) {
         enderchest.getSoundHandler().sendAnvilLandSound(p);
         for (String h : enderchest.getConfigHandler().getStringList("chatMessages.Help.header")) {
-            p.sendMessage(h.replaceAll("&", "�"));
+            p.sendMessage(h.replaceAll("&", "§"));
         }
         if (p.hasPermission("CustomEnderChest.admin")) {
             for (String h : enderchest.getConfigHandler().getStringList("chatMessages.Help.admin")) {
-                p.sendMessage(h.replaceAll("&", "�"));
+                p.sendMessage(h.replaceAll("&", "§"));
             }
         } else {
             for (String h : enderchest.getConfigHandler().getStringList("chatMessages.Help.user")) {
-                p.sendMessage(h.replaceAll("&", "�"));
+                p.sendMessage(h.replaceAll("&", "§"));
             }
             if (p.hasPermission("CustomEnderChest.commands")) {
                 for (String h : enderchest.getConfigHandler().getStringList("chatMessages.Help.command")) {
-                    p.sendMessage(h.replaceAll("&", "�"));
+                    p.sendMessage(h.replaceAll("&", "§"));
                 }
             }
             for (String h : enderchest.getConfigHandler().getStringList("chatMessages.Help.userFooter")) {
-                p.sendMessage(h.replaceAll("&", "�"));
+                p.sendMessage(h.replaceAll("&", "§"));
             }
         }
     }

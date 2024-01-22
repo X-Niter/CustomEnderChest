@@ -1,8 +1,10 @@
 package com.github.xniter.customenderchest;
 
+import net.kyori.adventure.text.TextComponent;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 
+import java.awt.*;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
@@ -42,7 +44,7 @@ public class ConfigHandler {
         } else {
             String configValue = enderchest.getConfig().getString(key);
             if (configValue != null) {
-                return configValue.replaceAll("&", "�");
+                return configValue.replaceAll("&", "§");
             } else {
                 // Handle the case where configValue is null
                 enderchest.getLogger().severe("Value for " + key + " in the config.yml is null!");
@@ -110,11 +112,12 @@ public class ConfigHandler {
 
             if (p != null) {
                 //Message format
-                p.sendMessage(getString("chatMessages.prefix").replaceAll("&", "�") + message.get(0).replaceAll("&", "�"));
+                p.sendMessage(getString("chatMessages.prefix").replaceAll("&", "§") + message.get(0).replaceAll("&", "§"));
             }
 
         } else {
             enderchest.getLogger().severe("Could not locate '" + messageKey + "' in the config.yml inside of the CustomEnderChest folder!");
+
             p.sendMessage(ChatColor.DARK_RED + "" + ChatColor.BOLD + ">> " + ChatColor.RED + "Could not locate '" + messageKey + "' in the config.yml inside of the CustomEnderChest folder!");
         }
 

@@ -1,0 +1,196 @@
+package com.github.xniter.customenderchest;
+
+import com.github.xniter.customenderchest.commands.FileToMysqlCmd;
+import com.github.xniter.customenderchest.storage.FlatFileStorage;
+import com.github.xniter.customenderchest.storage.MysqlSetup;
+import com.github.xniter.customenderchest.storage.MysqlStorage;
+import com.github.xniter.customenderchest.storage.StorageInterface;
+import com.github.xniter.customenderchest.utils.EnderChestUtils;
+import com.github.xniter.customenderchest.utils.ModdedSerializer;
+import org.bukkit.Bukkit;
+import org.bukkit.event.HandlerList;
+import org.bukkit.inventory.Inventory;
+import org.bukkit.plugin.PluginManager;
+import org.bukkit.plugin.java.JavaPlugin;
+
+import java.io.File;
+import java.nio.file.FileSystems;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.UUID;
+import java.util.logging.Logger;
+
+public final class CustomEnderChest extends JavaPlugin {
+
+    public static Logger log;
+    public Map<Inventory, UUID> admin = new HashMap<Inventory, UUID>();
+    public static boolean is19Server = true;
+    public static boolean is13Server = false;
+    public static String pluginName = "CustomEnderChest";
+
+    private static ConfigHandler configHandler;
+    private static StorageInterface storageInterface;
+    private static EnderChestUtils enderchestUtils;
+    private static DataHandler dH;
+    private static MysqlSetup mysqlSetup;
+    private static SoundHandler sH;
+    private static ModdedSerializer ms;
+    private static FileToMysqlCmd ftmc;
+
+    public void onEnable() {
+        log = getLogger();
+        getMcVersion();
+        configHandler = new ConfigHandler(this);
+        checkForModdedNBTsupport();
+        enderchestUtils = new EnderChestUtils(this);
+        if (configHandler.getString("database.typeOfDatabase").equalsIgnoreCase("mysql")) {
+            log.info("Using MySQL database for data.");
+            mysqlSetup = new MysqlSetup(this);
+            storageInterface = new MysqlStorage(this);
+        } else {
+            log.info("Using FlatFile system for data. IMPORTANT! We recommend MySQL.");
+            File pluginFolder = new File("plugins" + FileSystems.getDefault().getSeparator() + pluginName + FileSystems.getDefault().getSeparator() + "PlayerData");
+            if (!pluginFolder.exists()) {
+                pluginFolder.mkdir();
+            }
+            storageInterface = new FlatFileStorage(this);
+        }
+        dH = new DataHandler(this);
+        sH = new SoundHandler(this);
+        ftmc = new FileToMysqlCmd(this);
+        PluginManager pm = getServer().getPluginManager();
+        pm.registerEvents(new PlayerHandler(this), this);
+        CommandHandler cH = new CommandHandler(this);
+        getCommand("bp").setExecutor(cH);
+        getCommand("backpack").setExecutor(cH);
+        log.info(pluginName + " loaded successfully!");
+    }
+
+    //Disabling plugin
+    public void onDisable() {
+        Bukkit.getScheduler().cancelTasks(this);
+        if (configHandler.getString("database.typeOfDatabase").equalsIgnoreCase("mysql")) {
+            if (mysqlSetup.getConnection() != null) {
+                log.info("Closing database connection...");
+                mysqlSetup.closeDatabase();
+            }
+        }
+        log.info("Cleaning internal data...");
+        dH.clearLiveData();
+        HandlerList.unregisterAll(this);
+        log.info(pluginName + " is disabled!");
+    }
+
+    private boolean getMcVersion() {
+        String[] serverVersion = Bukkit.getBukkitVersion().split("-");
+        String version = serverVersion[0];
+
+        if (version.matches("1.7.10") || version.matches("1.7.9") || version.matches("1.7.5") || version.matches("1.7.2") || version.matches("1.8.8") || version.matches("1.8.3") || version.matches("1.8.4") || version.matches("1.8")) {
+            is19Server = false;
+            is13Server = false;
+            log.info("Compatible server version detected: " + version);
+            return true;
+        } else if (version.matches("1.9") || version.matches("1.9.1") || version.matches("1.9.2") || version.matches("1.9.3") || version.matches("1.9.4")) {
+            is19Server = true;
+            is13Server = false;
+            log.info("Compatible server version detected: " + version);
+            return true;
+        } else if (version.matches("1.10") || version.matches("1.10.1") || version.matches("1.10.2")) {
+            is19Server = true;
+            is13Server = false;
+            log.info("Compatible server version detected: " + version);
+            return true;
+        } else if (version.matches("1.11") || version.matches("1.11.1") || version.matches("1.11.2")) {
+            is19Server = true;
+            is13Server = false;
+            log.info("Compatible server version detected: " + version);
+            return true;
+        } else if (version.matches("1.12") || version.matches("1.12.1") || version.matches("1.12.2")) {
+            is19Server = true;
+            is13Server = false;
+            log.info("Compatible server version detected: " + version);
+            return true;
+        } else if (version.matches("1.13") || version.matches("1.13.1") || version.matches("1.13.2")) {
+            is19Server = true;
+            is13Server = true;
+            log.info("Compatible server version detected: " + version);
+            return true;
+        } else if (version.matches("1.14") || version.matches("1.14.1") || version.matches("1.14.2") || version.matches("1.14.3") || version.matches("1.14.4")) {
+            is19Server = true;
+            is13Server = true;
+            log.info("Compatible server version detected: " + version);
+            return true;
+        } else if (version.matches("1.15") || version.matches("1.15.1") || version.matches("1.15.2")) {
+            is19Server = true;
+            is13Server = true;
+            log.info("Compatible server version detected: " + version);
+            return true;
+        } else if (version.matches("1.16") || version.matches("1.16.1") || version.matches("1.16.2") || version.matches("1.16.3")) {
+            is19Server = true;
+            is13Server = true;
+            log.info("Compatible server version detected: " + version);
+            return true;
+        } else if (version.matches("1.18") || version.matches("1.18.1") || version.matches("1.18.2")) {
+            is19Server = true;
+            is13Server = true;
+            log.info("Compatible server version detected: " + version);
+            return true;
+        } else if (version.matches("1.19") || version.matches("1.19.1") || version.matches("1.19.2") || version.matches("1.19.3") || version.matches("1.19.4")) {
+            is19Server = true;
+            is13Server = true;
+            log.info("Compatible server version detected: " + version);
+            return true;
+        } else if (version.matches("1.20") || version.matches("1.20.1") || version.matches("1.20.2") || version.matches("1.20.3") || version.matches("1.20.4")) {
+            is19Server = true;
+            is13Server = true;
+            log.info("Compatible server version detected: " + version);
+            return true;
+        } else {
+            //Default fallback to 1.15 API
+            is19Server = true;
+            is13Server = true;
+            log.info("Incompatible server version detected: " + version + " . Running into 1.16 API mode.");
+        }
+        return false;
+    }
+
+    private void checkForModdedNBTsupport() {
+        if (configHandler.getBoolean("settings.modded-NBT-data-support")) {
+            if (configHandler.getString("database.typeOfDatabase").equalsIgnoreCase("mysql")) {
+                if (Bukkit.getPluginManager().getPlugin("ProtocolLib") != null) {
+                    ms = new ModdedSerializer(this);
+                    log.info("ProtocolLib dependency found. Modded NBT data support is enabled!");
+                } else {
+                    log.warning("ProtocolLib dependency not found!!! Modded NBT data support is disabled!");
+                }
+            } else {
+                log.warning("NBT Modded data support only works for MySQL storage. Modded NBT data support is disabled!");
+            }
+        }
+    }
+
+    public ConfigHandler getConfigHandler() {
+        return configHandler;
+    }
+    public StorageInterface getStorageInterface() {
+        return storageInterface;
+    }
+    public EnderChestUtils getEnderChestUtils() {
+        return enderchestUtils;
+    }
+    public MysqlSetup getMysqlSetup() {
+        return mysqlSetup;
+    }
+    public SoundHandler getSoundHandler() {
+        return sH;
+    }
+    public DataHandler getDataHandler() {
+        return dH;
+    }
+    public ModdedSerializer getModdedSerializer() {
+        return ms;
+    }
+    public FileToMysqlCmd getFileToMysqlCmd() {
+        return ftmc;
+    }
+}
